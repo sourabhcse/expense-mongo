@@ -3,8 +3,8 @@ const Expense=require('../models/expenses');
 
 exports.getPremium=async(req,res,next)=>{
     try{
-        const users=await User.findAll()
-        const expenses=await Expense.findAll()
+        const users=await User.find()
+        const expenses=await Expense.find()
         const userAggregatedExpenses={}
         expenses.forEach((expense)=>{
             if(userAggregatedExpenses[expense.userId]){
