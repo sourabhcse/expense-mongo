@@ -8,10 +8,11 @@ const auth=async(req,res,next) =>{
         const token=req.header('Authorization');
         console.log(token)
         const user=jwt.verify(token,process.env.TOKEN)
-        console.log(user.userId)
-        User.findByPk(user.userId).then((user=>{
-            
+        console.log('auth',user.userId)
+        User.findById(user.userId).then((user=>{
+            console.log('userrrr',user._id)
             req.user=user;
+            console.log(req.user._id)
             console.log(req.user)
             next();
         }))    
