@@ -55,13 +55,15 @@ exports.postSignup=async(req,res,next)=>{
     if(isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)){
         res.status(400).json({err:'bad parameter....something went wrong'})
     }
-//     const existinguser=User.findOne({email})
-//     if(existinguser) return res.status(400).json('user already exists')
     
     const saltrounds=10
     bcrypt.hash(password,saltrounds,async(err,hash)=>{
-        await User.create({name,email,password:hash})
-        res.status(201).json({message:'succesfully create new user'})
+        const user =new User({name,email,password:hash})
+        // await User.create({name,email,password:hash})
+        console.log(user)
+        user.save()
+
+        res.status(201).json({user,message:'succesfully create new user'})
     })
 
 
@@ -74,18 +76,17 @@ exports.postLogin=async(req,res,next)=>{
     try{
     const{email,password}=req.body;
     console.log(password)
-    console.log(process.env.token)
     if(isstringinvalid(email) || isstringinvalid(password)){
         res.status(400).json({message:'email or password is missing',success:false})
     }
-    const user=await User.findAll({where:{email}})
+    const user=await User.find({email})
         if(user.length>0){
             bcrypt.compare(password,user[0].password,(err,result)=>{
                 if(err){
                     throw new Error('something went wrong')
                 }
                 if(result===true){
-                    res.status(200).json({success:true,message:'user logged in successfully',token:generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser)})
+                    res.status(200).json({user,success:true,message:'user logged in successfully',token:generateAccessToken(user[0].id,user[0].name,user[0].ispremiumuser)})
                 }else{
                     return res.status(400).json({success:false,message:'password is incorrect'})
                 }
@@ -106,7 +107,7 @@ exports.getDownload=async(req,res,next)=>{
     try{
 
     const expenses=await req.user.getExpenses()
-    // console.log(expenses)
+    console.log(expenses)
     const stringifiedExpenses=JSON.stringify(expenses)
     // depend on the users
     const userId=req.user.id;
