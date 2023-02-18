@@ -1,12 +1,7 @@
 const User = require('../models/users');
 const bcrypt=require('bcrypt');
-const uuid=require('uuid');
+const uuid=require('uuid')
 const sgMail=require('@sendgrid/mail');
-
-
-
-
-
 
 exports.getForgotpassword=async(req,res,next)=>{
     try {
@@ -25,7 +20,7 @@ exports.getForgotpassword=async(req,res,next)=>{
 
             const msg = {
                 to: email,
-                from: 'sourabhsaini201098@gmail.com',
+                from: 'deepak545608@gmail.com',
                 subject: 'Sending with SendGrid is Fun',
                 text: 'and easy to do anywhere, even with Node.js',
                 html: `<h1>http://localhost:4000/password/resetpassword/${id}</h1>`,
