@@ -14,17 +14,12 @@ exports.getPurchase=async(req,res)=>{
         key_secret:process.env.RAZORPAY_KEY_SECRET
     })
     const amount=2500;
-    rzp.orders.create({amount,currency:"INR"},(err,order)=>{
-        if(err){
-            throw new Error(JSON.stringify(err));
-        }
-        req.user.createOrder({orderid:order.id,status:'PENDING'}).then(()=>{
-            return res.json({order,key_id:rzp.key_id});
-        }).catch(err=>{
-            throw new Error(err)
-        })
-    })
-}catch{
+    const response = await rzp.orders.create({amount,currency:"INR"})
+    const order=new Order({orderid:response.id,status:'PENDING',userId:req.user})
+    await order.save();
+    res.json({order,key_id:rzp.key_id})
+
+}catch(err){
     console.log(err)
     res.status(500).json({message:'something went wrong',error:err})
 }
