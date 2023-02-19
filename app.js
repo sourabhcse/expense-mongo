@@ -53,7 +53,14 @@ app.use(RazorpayRoutes)
 // })
 
 
-mongoose.connect('mongodb+srv://sourabhsaini201098:2r5GFHXDzw5JPkX9@cluster0.ypqknjp.mongodb.net/?retryWrites=true&w=majority')
+mongoose.set("strictQuery", false);
+mongoose.connect('mongodb://localhost:27017/usersdb',
+  {
+    useNewUrlParser: true,
+   // useFindAndModify: false,
+    useUnifiedTopology: true
+  }
+)
 .then(result=>{
   app.listen(4000)
 }).catch(err=>{
